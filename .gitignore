@@ -1,0 +1,20 @@
+# Ignore Python cache and environment
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+env/
+venv/
+.env
+
+# Ignore Gradle cache (if ever present)
+.gradle/
+build/
+out/
+
+# IDE files
+*.iml
+.idea/
+
+# Logs
+*.log
