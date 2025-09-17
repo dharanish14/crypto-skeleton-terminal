@@ -1,0 +1,5 @@
+Flask==2.3.5
+pymongo==4.5.1
+cryptography==41.0.3
+python-dotenv==1.0.0
+gunicorn==21.2.0
