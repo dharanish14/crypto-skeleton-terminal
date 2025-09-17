@@ -1,4 +1,4 @@
-# Ignore Python cache and environment
+# Python cache and virtual environment
 __pycache__/
 *.pyc
 *.pyo
@@ -7,14 +7,14 @@ env/
 venv/
 .env
 
-# Ignore Gradle cache (if ever present)
+# IDE and system files
+*.iml
+.idea/
+*.log
+.DS_Store
+
+# Node / Gradle
+node_modules/
 .gradle/
 build/
 out/
-
-# IDE files
-*.iml
-.idea/
-
-# Logs
-*.log

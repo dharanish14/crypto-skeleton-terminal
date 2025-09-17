@@ -1,382 +1,76 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Crypto Skeleton Terminal</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <style>
-    /* base */
-    :root{
-      --bg:#000;
-      --neon:#00ff88;
-      --neon-dim:#0f7f4f;
-      --panel:#00110a;
-      --glass: rgba(0,255,136,0.06);
-    }
-    html,body{height:100%;margin:0;background:var(--bg);color:var(--neon);font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;overflow:hidden}
-    /* canvas for trail */
-    #canvas{position:fixed;left:0;top:0;width:100%;height:100%;z-index:0}
-    /* top skeleton container */
-    #skeletonWrap{
-      position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:6;
-      width:160px;height:160px;pointer-events:none;display:flex;align-items:center;justify-content:center;
-      filter:drop-shadow(0 8px 20px rgba(0,255,136,0.06));
-    }
-    /* skeleton face (SVG) */
-    #skeleton{
-      width:120px;height:120px;transform-origin:50% 60%; /* pivot slightly below center to mimic neck */
-      transition: transform 0.08s linear;
-      opacity:0.95;
-      mix-blend-mode:screen;
-      will-change: transform;
-      filter: drop-shadow(0 6px 14px rgba(0,255,136,0.08));
-    }
-
-    /* main UI panel */
-    .panel{
-      position:relative;z-index:4;margin:120px auto 30px;max-width:980px;padding:18px;border-radius:8px;
-      background:linear-gradient(180deg, rgba(0,10,5,0.45), rgba(0,8,3,0.35));
-      border:1px solid rgba(0,255,136,0.06);
-      box-shadow:0 10px 50px rgba(0,0,0,0.6), inset 0 0 60px rgba(0,255,136,0.02);
-    }
-    header{display:flex;gap:12px;align-items:center}
-    .logo {
-      width:48px;height:48px;border-radius:6px;background:linear-gradient(180deg,#001b0f,#003322);display:flex;align-items:center;justify-content:center;
-      box-shadow:0 4px 18px rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.08)
-    }
-    .logo small{font-size:18px;color:var(--neon)}
-    h1{margin:0;font-size:18px;color:var(--neon);text-shadow:0 0 8px rgba(0,255,136,0.08)}
-    p.lead{margin:6px 0 0 0;color:#8fffbf;font-size:12px}
-
-    /* controls */
-    .controls{margin-top:14px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-    textarea, input[type="text"]{
-      background:var(--panel);color:var(--neon);border:1px solid rgba(0,255,136,0.06);padding:12px;border-radius:6px;
-      font-family:inherit;font-size:13px;resize:vertical;min-height:96px;max-width:100%;box-sizing:border-box;
-      outline:none;
-    }
-    .btn{background:#00220f;border:1px solid rgba(0,255,136,0.08);color:var(--neon);padding:10px 14px;border-radius:6px;cursor:pointer;transition:all .12s}
-    .btn:hover{box-shadow:0 6px 18px rgba(0,255,136,0.08);transform:translateY(-2px)}
-    .small{padding:8px 10px;font-size:13px}
-
-    /* terminal area */
-    .terminal {
-      margin-top:16px;background:rgba(0,0,0,0.55);border:1px solid rgba(0,255,136,0.04);
-      padding:14px;border-radius:6px;color:#bfffcf;height:220px;overflow:auto;white-space:pre-wrap;
-      font-size:13px;box-shadow:inset 0 0 40px rgba(0,255,136,0.02);
-      position:relative;
-    }
-    .cursor{
-      display:inline-block;width:10px;background:var(--neon);margin-left:6px;animation:blink 1s steps(2) infinite;
-    }
-    @keyframes blink{50%{opacity:0}}
-
-    /* status bar & progress */
-    .status{display:flex;gap:10px;align-items:center;margin-top:10px}
-    .spinner{
-      width:18px;height:18px;border-radius:50%;border:2px solid rgba(0,255,136,0.12);border-top-color:var(--neon);
-      animation:spin 0.8s linear infinite;
-    }
-    @keyframes spin{to{transform:rotate(360deg)}}
-
-    .progressBar{height:8px;background:rgba(255,255,255,0.03);border-radius:6px;overflow:hidden;width:200px}
-    .progress{height:100%;background:linear-gradient(90deg,var(--neon),var(--neon-dim));width:0%;transition:width 0.15s linear}
-
-    /* small helpers */
-    .meta{font-size:12px;color:#9fffb7}
-    footer{margin-top:14px;font-size:12px;color:#7fffb7;opacity:0.8}
-
-    /* responsive */
-    @media (max-width:640px){
-      .panel{margin:200px 12px 30px}
-      #skeletonWrap{width:110px;height:110px;top:8px}
-      #skeleton{width:86px;height:86px}
-      .terminal{height:180px}
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Crypto Skeleton Terminal</title>
+<style>
+body {
+    background-color: black;
+    color: #00ff00;
+    font-family: monospace;
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+}
+#terminal {
+    padding: 20px;
+    height: 90vh;
+    overflow-y: auto;
+    white-space: pre-wrap;
+}
+#skeleton {
+    position: absolute;
+    width: 100px;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: transform 0.05s;
+}
+input {
+    width: 80%;
+    background: black;
+    color: #00ff00;
+    border: none;
+    font-family: monospace;
+}
+button {
+    background: black;
+    color: #00ff00;
+    border: 1px solid #00ff00;
+    cursor: pointer;
+}
+</style>
 </head>
 <body>
-  <canvas id="canvas"></canvas>
+<img id="skeleton" src="https://i.ibb.co/3T2sDZm/skeleton.png">
+<div id="terminal">Welcome to Crypto Skeleton Terminal!\n</div>
+<div style="position:absolute;bottom:10px;width:100%;text-align:center;">
+    <input id="msg" placeholder="Type your message...">
+    <button onclick="encrypt()">Encrypt</button>
+</div>
+<script>
+const terminal = document.getElementById('terminal');
+const skeleton = document.getElementById('skeleton');
 
-  <!-- Skeleton fixed at top center (inline SVG so rotation is crisp) -->
-  <div id="skeletonWrap" aria-hidden="true">
-    <svg id="skeleton" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-      <!-- simple stylized skull (monochrome neon) -->
-      <defs>
-        <radialGradient id="g" cx="50%" cy="40%">
-          <stop offset="0%" stop-color="#bfffcf" stop-opacity="0.95"/>
-          <stop offset="100%" stop-color="#006644" stop-opacity="0.2"/>
-        </radialGradient>
-      </defs>
-      <g transform="translate(10,6)">
-        <ellipse cx="90" cy="80" rx="70" ry="64" fill="url(#g)" stroke="#003322" stroke-width="3" />
-        <rect x="60" y="95" width="60" height="28" rx="6" fill="#00110a" stroke="#002211" stroke-width="2"/>
-        <circle cx="65" cy="70" r="12" fill="#00110a" stroke="#003322" stroke-width="3"/>
-        <circle cx="115" cy="70" r="12" fill="#00110a" stroke="#003322" stroke-width="3"/>
-        <path d="M75 120 q15 10 30 0" stroke="#003322" stroke-width="4" fill="none" stroke-linecap="round"/>
-        <path d="M45 60 q45 20 100 0" fill="none" stroke="#003322" stroke-width="3" opacity="0.8"/>
-        <!-- subtle glow -->
-        <ellipse cx="90" cy="80" rx="85" ry="78" fill="rgba(0,255,136,0.02)"/>
-      </g>
-    </svg>
-  </div>
+document.addEventListener('mousemove', e => {
+    const x = e.clientX - window.innerWidth/2;
+    const y = e.clientY - 50;
+    skeleton.style.transform = `translate(${x}px, ${y}px)`;
+});
 
-  <main class="panel" role="main" aria-live="polite">
-    <header>
-      <div class="logo"><small>CS</small></div>
-      <div>
-        <h1>Crypto Skeleton Terminal</h1>
-        <p class="lead">AES-256-GCM + RSA-4096-OAEP hybrid — interact via terminal below</p>
-      </div>
-    </header>
-
-    <section class="controls" aria-label="controls">
-      <textarea id="message" placeholder="Type your secret message here..."></textarea>
-      <div style="display:flex;gap:10px;align-items:flex-start;flex-direction:column">
-        <div style="display:flex;flex-direction:row;gap:8px;">
-          <button class="btn" id="btnEncrypt">Encrypt & Store</button>
-          <button class="btn" id="btnDecrypt">Decrypt by ID</button>
-        </div>
-        <input id="docId" type="text" placeholder="Paste document id to decrypt" style="width:320px" />
-      </div>
-    </section>
-
-    <div class="terminal" id="terminal" role="status" aria-atomic="true">
-      <div id="terminalContent">[system] ready. await commands. <span class="cursor"></span></div>
-    </div>
-
-    <div class="status" aria-hidden="true">
-      <div class="spinner" id="spinner" style="display:none"></div>
-      <div class="progressBar"><div class="progress" id="progress"></div></div>
-      <div class="meta" id="meta">idle</div>
-    </div>
-
-    <footer>Tip: move the mouse and watch the skeleton follow your gaze. Terminal shows step-by-step animation.</footer>
-  </main>
-
-  <script>
-  /* -----------------------
-     Canvas mouse trail
-     ----------------------- */
-  const canvas = document.getElementById('canvas');
-  const ctx = canvas.getContext('2d', { alpha:true });
-  function fitCanvas(){ canvas.width = innerWidth; canvas.height = innerHeight; }
-  fitCanvas(); addEventListener('resize', fitCanvas);
-  let points = [];
-  addEventListener('mousemove', e => {
-    points.push({x:e.clientX, y:e.clientY, t:Date.now()});
-    if(points.length>260) points.shift();
-  });
-  function drawTrail(){
-    // fade background lightly
-    ctx.fillStyle = 'rgba(0,0,0,0.06)';
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-    if(points.length){
-      ctx.beginPath();
-      ctx.moveTo(points[0].x, points[0].y);
-      for(let i=1;i<points.length;i++){
-        const p = points[i];
-        const prev = points[i-1];
-        // slight smoothing
-        const cx = (prev.x + p.x) / 2;
-        const cy = (prev.y + p.y) / 2;
-        ctx.quadraticCurveTo(prev.x, prev.y, cx, cy);
-      }
-      // gradient stroke
-      const grad = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
-      grad.addColorStop(0,'rgba(0,255,136,0.2)');
-      grad.addColorStop(1,'rgba(0,160,90,0.85)');
-      ctx.strokeStyle = grad;
-      ctx.lineWidth = 1.2;
-      ctx.lineCap = 'round';
-      ctx.stroke();
-    }
-    requestAnimationFrame(drawTrail);
-  }
-  drawTrail();
-
-  /* -----------------------
-     Skeleton gaze: rotate toward mouse
-     ----------------------- */
-  const skull = document.getElementById('skeleton');
-  const wrap = document.getElementById('skeletonWrap');
-
-  // compute center of the skeleton element
-  function skeletonCenter(){
-    const r = wrap.getBoundingClientRect();
-    return { x: r.left + r.width/2, y: r.top + r.height/2 + 18 }; // slightly lower pivot
-  }
-
-  document.addEventListener('mousemove', e => {
-    const c = skeletonCenter();
-    const dx = e.clientX - c.x;
-    const dy = e.clientY - c.y;
-    const angle = Math.atan2(dy, dx) * (180/Math.PI); // degrees
-    // clamp rotation to sensible limits so it looks natural
-    let rot = angle;
-    // we want skull to look roughly left/right/up/down; limit between -60 and 60 for yaw, add small tilt based on dy
-    if(rot > 60) rot = 60;
-    if(rot < -60) rot = -60;
-    // tilt factor
-    const tilt = Math.max(-12, Math.min(12, -dy * 0.02));
-    skull.style.transform = `rotate(${rot}deg) perspective(500px) rotateX(${tilt}deg)`;
-    // slight scale depending on vertical position (parallax)
-    const scale = 1 + ( (e.clientY / window.innerHeight) - 0.5 ) * 0.06;
-    skull.style.transform += ` scale(${scale})`;
-  });
-
-  /* -----------------------
-     Terminal animation utilities
-     ----------------------- */
-  const term = document.getElementById('terminalContent');
-  const spinner = document.getElementById('spinner');
-  const progressEl = document.getElementById('progress');
-  const meta = document.getElementById('meta');
-
-  function setMeta(txt){ meta.innerText = txt; }
-  function showSpinner(show){ spinner.style.display = show ? 'inline-block' : 'none'; }
-
-  // typewriter append (returns a promise that resolves when done)
-  function typeAppend(text, speed=18){
-    return new Promise(resolve=>{
-      let i=0;
-      const step = () => {
-        if(i < text.length){
-          term.innerText += text.charAt(i++);
-          term.scrollIntoView({behavior:'smooth', block:'end'});
-          setTimeout(step, speed);
-        } else {
-          resolve();
-        }
-      };
-      step();
+function encrypt() {
+    const msg = document.getElementById('msg').value;
+    if(!msg) return;
+    fetch('/encrypt', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({message: msg})
+    }).then(res=>res.json()).then(data=>{
+        terminal.innerText += `> ${msg}\nEncrypted: ${data.encrypted}\n`;
+        document.getElementById('msg').value = '';
+        terminal.scrollTop = terminal.scrollHeight;
     });
-  }
-
-  // clears and writes header prompt
-  function clearAndPrompt(){
-    term.innerText = '[user@cryptobox]$ ';
-  }
-
-  // show progress bar to a target percent gradually
-  function runProgress(target=100, duration=800){
-    return new Promise(resolve=>{
-      showSpinner(true);
-      const start = performance.now();
-      const initial = parseFloat(progressEl.style.width) || 0;
-      function frame(now){
-        const t = Math.min(1, (now - start)/duration);
-        const val = initial + (target - initial)*t;
-        progressEl.style.width = val + '%';
-        if(t < 1) requestAnimationFrame(frame);
-        else { showSpinner(false); resolve(); }
-      }
-      requestAnimationFrame(frame);
-    });
-  }
-
-  // helper: perform a "terminal-style" network action
-  async function terminalAction(commandText, actionFn){
-    clearAndPrompt();
-    await typeAppend(commandText + '\\n');
-    setMeta('running');
-    progressEl.style.width = '0%';
-    // progress to 30% fast
-    await runProgress(30, 280);
-    try {
-      const result = await actionFn((pct)=>runProgress(pct, 420)); // pass a progress updater if needed
-      await runProgress(100, 300);
-      setMeta('done');
-      return result;
-    } catch(e){
-      setMeta('error');
-      showSpinner(false);
-      await runProgress(100, 100);
-      throw e;
-    }
-  }
-
-  /* -----------------------
-     Button handlers (Encrypt / Decrypt)
-     ----------------------- */
-  const msgEl = document.getElementById('message');
-  const idEl = document.getElementById('docId');
-
-  document.getElementById('btnEncrypt').addEventListener('click', async ()=>{
-    const msg = msgEl.value.trim();
-    if(!msg){ clearAndPrompt(); await typeAppend('> error: message is empty\\n'); return; }
-    // create a downsampled trail
-    const trail = points.filter((_,i)=> i%6===0).slice(-200);
-
-    try {
-      const res = await terminalAction('encrypting message...', async (progressUpdater)=>{
-        // small local fake steps to simulate hashing/encrypting
-        await typeAppend('[*] deriving ephemeral key...\\n', 10);
-        await runProgress(42, 420);
-        await typeAppend('[*] encrypting payload...\\n', 10);
-        await runProgress(66, 420);
-        // real network call
-        const r = await fetch('/encrypt', {
-          method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ message: msg, trail })
-        });
-        const j = await r.json();
-        await typeAppend('[*] storing ciphertext...\\n',10);
-        return j;
-      });
-      // show returned id
-      if(res && res.id){
-        await typeAppend('\\n[+] id: ' + res.id + '\\n\\n', 6);
-        idEl.value = res.id;
-      } else {
-        await typeAppend('\\n[-] error storing: ' + JSON.stringify(res) + '\\n');
-      }
-    } catch(err){
-      await typeAppend('\\n[-] operation failed: ' + (err.message || String(err)) + '\\n');
-    }
-  });
-
-  document.getElementById('btnDecrypt').addEventListener('click', async ()=>{
-    const id = idEl.value.trim();
-    if(!id){ clearAndPrompt(); await typeAppend('> error: id is empty\\n'); return; }
-    try {
-      const res = await terminalAction('decrypting document ' + id + ' ...', async ()=>{
-        await typeAppend('[*] locating document...\\n', 10);
-        await runProgress(30, 220);
-        await typeAppend('[*] unwrapping key...\\n', 10);
-        await runProgress(62, 320);
-        const r = await fetch('/decrypt', {
-          method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ id })
-        });
-        const j = await r.json();
-        await typeAppend('[*] verifying auth tag...\\n', 10);
-        await runProgress(92, 280);
-        return j;
-      });
-      if(res && res.plaintext){
-        await typeAppend('\\n[+] decrypted:\\n', 10);
-        // reveal plaintext with typewriter style
-        await typeAppend('> ' + res.plaintext + '\\n\\n', 10);
-        if(res.mouseTrail) await typeAppend('[#] mouseTrail points saved: '+ res.mouseTrail.length + '\\n');
-      } else {
-        await typeAppend('\\n[-] decryption error: ' + JSON.stringify(res) + '\\n');
-      }
-    } catch(err){
-      await typeAppend('\\n[-] operation failed: ' + (err.message || String(err)) + '\\n');
-    }
-  });
-
-  // small initial prompt
-  (async ()=>{ clearAndPrompt(); await typeAppend('welcome to crypto-skeleton. use encrypt/decrypt buttons.\\n'); })();
-
-  /* -----------------------
-     keyboard shortcuts
-     ----------------------- */
-  document.addEventListener('keydown', e=>{
-    if(e.ctrlKey && e.key==='Enter'){ document.getElementById('btnEncrypt').click(); }
-    if(e.ctrlKey && e.key==='d'){ document.getElementById('btnDecrypt').click(); }
-  });
-  </script>
+}
+</script>
 </body>
 </html>
